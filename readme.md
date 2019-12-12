@@ -1,5 +1,7 @@
 # GB ENDLESS SHMUP
 
+This is not a serious project, the code IS SLOPPY, but it was a fun little project.
+
 ## To play
 
 Simply load up schmup.gb in your favourite GB emulator.
