@@ -1,6 +1,6 @@
 # GB ENDLESS SHMUP
 
-This is not a serious project, the code IS SLOPPY, but it was a fun little project.
+This is not a serious project, the code IS SLOPPY, the gameplay IS BAD, but it was a fun little project.
 
 ## To play
 
