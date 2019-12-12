@@ -19,6 +19,9 @@
 #define ENEMY_UPDATE_COOLDOWN 1
 #define ENEMY_SPAWN_TIME 60
 
+#define GAMEOBJECT_WIDTH 8
+#define GAMEOBJECT_HEIGHT 8
+
 /*Predeclare our functions*/
 void init();
 void initBullets();
@@ -250,6 +253,25 @@ void updateEnemies()
   }
 }
 
+
+void checkAABBCollision(GameObject a, GameObject b)
+{
+  if(a.xPos > (b.xPos + GAMEOBJECT_WIDTH)) {
+    return false;
+  }
+  if(a.xPos + GAMEOBJECT_WIDTH < b.xPos) {
+    return false;
+  }
+  if(a.yPos > b.yPos + GAMEOBJECT_HEIGHT) {
+    return false;
+  }
+  if(a.yPos + GAMEOBJECT_HEIGHT < b.yPos) {
+    return false;
+  }
+
+  return true;
+}
+
 void checkCollisions()
 {
   UINT8 i;
@@ -268,17 +290,8 @@ void checkCollisions()
         continue;
       }
 
-      if(bullets[i].xPos > (enemies[j].xPos+8)) {
-        continue;
-      }
-      if(bullets[i].xPos + 8 < enemies[j].xPos) {
-        continue;
-      }
-      if(bullets[i].yPos > enemies[j].yPos+8) {
-        continue;
-      }
-      if(bullets[i].yPos + 8 < enemies[j].yPos) {
-        continue;
+      if(!checkAABBCollision(bullets[i], enemies[j]) {
+        continue; //no collision
       }
 
       //collision detected
@@ -292,3 +305,4 @@ void checkCollisions()
     }
   }
 }
+
