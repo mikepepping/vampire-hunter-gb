@@ -1,0 +1,13 @@
+-mjwx
+-i ./obj/main.ihx
+-b _CODE = 0x0200
+-b _DATA = 0xc0a0
+-k /home/michael/gbdk-n/bin/../lib
+-k /usr/bin/../share/sdcc/lib/gbz80
+-k /usr/share/sdcc/lib/gbz80
+-l gb.lib
+-l gbz80
+/home/michael/gbdk-n/bin/../lib/crt0.rel
+./obj/main.rel
+
+-e

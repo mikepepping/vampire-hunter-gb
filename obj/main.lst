@@ -1,0 +1,1381 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.5.0 #9253 (Mar 24 2016) (Linux)
+                              4 ; This file was generated Sun Apr 28 20:49:52 2019
+                              5 ;--------------------------------------------------------
+                              6 	.module main
+                              7 	.optsdcc -mgbz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _move_sprite
+                             14 	.globl _set_sprite_tile
+                             15 	.globl _set_sprite_data
+                             16 	.globl _set_bkg_data
+                             17 	.globl _wait_vbl_done
+                             18 	.globl _joypad
+                             19 	.globl _enemySpawnTimer
+                             20 	.globl _enemyUpdateCooldown
+                             21 	.globl _enemies
+                             22 	.globl _bulletCooldown
+                             23 	.globl _bullets
+                             24 	.globl _playerPos
+                             25 	.globl _spriteCount
+                             26 	.globl _mapTiles
+                             27 	.globl _sprites
+                             28 	.globl _init
+                             29 	.globl _initBullets
+                             30 	.globl _initEnemies
+                             31 	.globl _updateSwitches
+                             32 	.globl _checkInput
+                             33 	.globl _fireBullet
+                             34 	.globl _updateBullets
+                             35 	.globl _updateEnemies
+                             36 	.globl _checkCollisions
+                             37 ;--------------------------------------------------------
+                             38 ; ram data
+                             39 ;--------------------------------------------------------
+                             40 	.area _DATA
+   0000                      41 _sprites::
+   0000                      42 	.ds 64
+   0040                      43 _mapTiles::
+   0040                      44 	.ds 16
+   0050                      45 _spriteCount::
+   0050                      46 	.ds 1
+   0051                      47 _playerPos::
+   0051                      48 	.ds 2
+   0053                      49 _bullets::
+   0053                      50 	.ds 40
+   007B                      51 _bulletCooldown::
+   007B                      52 	.ds 1
+   007C                      53 _enemies::
+   007C                      54 	.ds 28
+   0098                      55 _enemyUpdateCooldown::
+   0098                      56 	.ds 1
+   0099                      57 _enemySpawnTimer::
+   0099                      58 	.ds 1
+                             59 ;--------------------------------------------------------
+                             60 ; absolute external ram data
+                             61 ;--------------------------------------------------------
+                             62 	.area _DABS (ABS)
+                             63 ;--------------------------------------------------------
+                             64 ; global & static initialisations
+                             65 ;--------------------------------------------------------
+                             66 	.area _HOME
+                             67 	.area _GSINIT
+                             68 	.area _GSFINAL
+                             69 	.area _GSINIT
+                             70 ;sprites.c:1: unsigned char sprites[] =
+   0000 21r00r00             71 	ld	hl,#_sprites
+   0003 36 00                72 	ld	(hl),#0x00
+   0005 01r01r00             73 	ld	bc,#_sprites + 1
+   0008 AF                   74 	xor	a, a
+   0009 02                   75 	ld	(bc),a
+   000A 01r02r00             76 	ld	bc,#_sprites + 2
+   000D AF                   77 	xor	a, a
+   000E 02                   78 	ld	(bc),a
+   000F 01r03r00             79 	ld	bc,#_sprites + 3
+   0012 AF                   80 	xor	a, a
+   0013 02                   81 	ld	(bc),a
+   0014 01r04r00             82 	ld	bc,#_sprites + 4
+   0017 AF                   83 	xor	a, a
+   0018 02                   84 	ld	(bc),a
+   0019 01r05r00             85 	ld	bc,#_sprites + 5
+   001C AF                   86 	xor	a, a
+   001D 02                   87 	ld	(bc),a
+   001E 01r06r00             88 	ld	bc,#_sprites + 6
+   0021 AF                   89 	xor	a, a
+   0022 02                   90 	ld	(bc),a
+   0023 01r07r00             91 	ld	bc,#_sprites + 7
+   0026 AF                   92 	xor	a, a
+   0027 02                   93 	ld	(bc),a
+   0028 01r08r00             94 	ld	bc,#_sprites + 8
+   002B AF                   95 	xor	a, a
+   002C 02                   96 	ld	(bc),a
+   002D 01r09r00             97 	ld	bc,#_sprites + 9
+   0030 AF                   98 	xor	a, a
+   0031 02                   99 	ld	(bc),a
+   0032 01r0Ar00            100 	ld	bc,#_sprites + 10
+   0035 AF                  101 	xor	a, a
+   0036 02                  102 	ld	(bc),a
+   0037 01r0Br00            103 	ld	bc,#_sprites + 11
+   003A AF                  104 	xor	a, a
+   003B 02                  105 	ld	(bc),a
+   003C 01r0Cr00            106 	ld	bc,#_sprites + 12
+   003F AF                  107 	xor	a, a
+   0040 02                  108 	ld	(bc),a
+   0041 01r0Dr00            109 	ld	bc,#_sprites + 13
+   0044 AF                  110 	xor	a, a
+   0045 02                  111 	ld	(bc),a
+   0046 01r0Er00            112 	ld	bc,#_sprites + 14
+   0049 AF                  113 	xor	a, a
+   004A 02                  114 	ld	(bc),a
+   004B 01r0Fr00            115 	ld	bc,#_sprites + 15
+   004E AF                  116 	xor	a, a
+   004F 02                  117 	ld	(bc),a
+   0050 21r10r00            118 	ld	hl,#(_sprites + 0x0010)
+   0053 36 18               119 	ld	(hl),#0x18
+   0055 01r11r00            120 	ld	bc,#_sprites + 17
+   0058 AF                  121 	xor	a, a
+   0059 02                  122 	ld	(bc),a
+   005A 21r12r00            123 	ld	hl,#(_sprites + 0x0012)
+   005D 36 18               124 	ld	(hl),#0x18
+   005F 01r13r00            125 	ld	bc,#_sprites + 19
+   0062 AF                  126 	xor	a, a
+   0063 02                  127 	ld	(bc),a
+   0064 21r14r00            128 	ld	hl,#(_sprites + 0x0014)
+   0067 36 18               129 	ld	(hl),#0x18
+   0069 21r15r00            130 	ld	hl,#(_sprites + 0x0015)
+   006C 36 42               131 	ld	(hl),#0x42
+   006E 21r16r00            132 	ld	hl,#(_sprites + 0x0016)
+   0071 36 3C               133 	ld	(hl),#0x3C
+   0073 21r17r00            134 	ld	hl,#(_sprites + 0x0017)
+   0076 36 5A               135 	ld	(hl),#0x5A
+   0078 21r18r00            136 	ld	hl,#(_sprites + 0x0018)
+   007B 36 7E               137 	ld	(hl),#0x7E
+   007D 21r19r00            138 	ld	hl,#(_sprites + 0x0019)
+   0080 36 18               139 	ld	(hl),#0x18
+   0082 21r1Ar00            140 	ld	hl,#(_sprites + 0x001a)
+   0085 36 7E               141 	ld	(hl),#0x7E
+   0087 01r1Br00            142 	ld	bc,#_sprites + 27
+   008A AF                  143 	xor	a, a
+   008B 02                  144 	ld	(bc),a
+   008C 21r1Cr00            145 	ld	hl,#(_sprites + 0x001c)
+   008F 36 FF               146 	ld	(hl),#0xFF
+   0091 21r1Dr00            147 	ld	hl,#(_sprites + 0x001d)
+   0094 36 18               148 	ld	(hl),#0x18
+   0096 21r1Er00            149 	ld	hl,#(_sprites + 0x001e)
+   0099 36 C3               150 	ld	(hl),#0xC3
+   009B 21r1Fr00            151 	ld	hl,#(_sprites + 0x001f)
+   009E 36 C3               152 	ld	(hl),#0xC3
+   00A0 21r20r00            153 	ld	hl,#(_sprites + 0x0020)
+   00A3 36 18               154 	ld	(hl),#0x18
+   00A5 01r21r00            155 	ld	bc,#_sprites + 33
+   00A8 AF                  156 	xor	a, a
+   00A9 02                  157 	ld	(bc),a
+   00AA 21r22r00            158 	ld	hl,#(_sprites + 0x0022)
+   00AD 36 24               159 	ld	(hl),#0x24
+   00AF 21r23r00            160 	ld	hl,#(_sprites + 0x0023)
+   00B2 36 18               161 	ld	(hl),#0x18
+   00B4 21r24r00            162 	ld	hl,#(_sprites + 0x0024)
+   00B7 36 5A               163 	ld	(hl),#0x5A
+   00B9 21r25r00            164 	ld	hl,#(_sprites + 0x0025)
+   00BC 36 24               165 	ld	(hl),#0x24
+   00BE 21r26r00            166 	ld	hl,#(_sprites + 0x0026)
+   00C1 36 A5               167 	ld	(hl),#0xA5
+   00C3 21r27r00            168 	ld	hl,#(_sprites + 0x0027)
+   00C6 36 42               169 	ld	(hl),#0x42
+   00C8 21r28r00            170 	ld	hl,#(_sprites + 0x0028)
+   00CB 36 A5               171 	ld	(hl),#0xA5
+   00CD 21r29r00            172 	ld	hl,#(_sprites + 0x0029)
+   00D0 36 42               173 	ld	(hl),#0x42
+   00D2 21r2Ar00            174 	ld	hl,#(_sprites + 0x002a)
+   00D5 36 5A               175 	ld	(hl),#0x5A
+   00D7 21r2Br00            176 	ld	hl,#(_sprites + 0x002b)
+   00DA 36 24               177 	ld	(hl),#0x24
+   00DC 21r2Cr00            178 	ld	hl,#(_sprites + 0x002c)
+   00DF 36 24               179 	ld	(hl),#0x24
+   00E1 21r2Dr00            180 	ld	hl,#(_sprites + 0x002d)
+   00E4 36 18               181 	ld	(hl),#0x18
+   00E6 21r2Er00            182 	ld	hl,#(_sprites + 0x002e)
+   00E9 36 18               183 	ld	(hl),#0x18
+   00EB 01r2Fr00            184 	ld	bc,#_sprites + 47
+   00EE AF                  185 	xor	a, a
+   00EF 02                  186 	ld	(bc),a
+   00F0 21r30r00            187 	ld	hl,#(_sprites + 0x0030)
+   00F3 36 E7               188 	ld	(hl),#0xE7
+   00F5 21r31r00            189 	ld	hl,#(_sprites + 0x0031)
+   00F8 36 E7               190 	ld	(hl),#0xE7
+   00FA 21r32r00            191 	ld	hl,#(_sprites + 0x0032)
+   00FD 36 3C               192 	ld	(hl),#0x3C
+   00FF 21r33r00            193 	ld	hl,#(_sprites + 0x0033)
+   0102 36 FF               194 	ld	(hl),#0xFF
+   0104 21r34r00            195 	ld	hl,#(_sprites + 0x0034)
+   0107 36 3C               196 	ld	(hl),#0x3C
+   0109 21r35r00            197 	ld	hl,#(_sprites + 0x0035)
+   010C 36 FF               198 	ld	(hl),#0xFF
+   010E 21r36r00            199 	ld	hl,#(_sprites + 0x0036)
+   0111 36 3C               200 	ld	(hl),#0x3C
+   0113 21r37r00            201 	ld	hl,#(_sprites + 0x0037)
+   0116 36 E7               202 	ld	(hl),#0xE7
+   0118 21r38r00            203 	ld	hl,#(_sprites + 0x0038)
+   011B 36 3C               204 	ld	(hl),#0x3C
+   011D 21r39r00            205 	ld	hl,#(_sprites + 0x0039)
+   0120 36 66               206 	ld	(hl),#0x66
+   0122 21r3Ar00            207 	ld	hl,#(_sprites + 0x003a)
+   0125 36 18               208 	ld	(hl),#0x18
+   0127 21r3Br00            209 	ld	hl,#(_sprites + 0x003b)
+   012A 36 5A               210 	ld	(hl),#0x5A
+   012C 21r3Cr00            211 	ld	hl,#(_sprites + 0x003c)
+   012F 36 18               212 	ld	(hl),#0x18
+   0131 21r3Dr00            213 	ld	hl,#(_sprites + 0x003d)
+   0134 36 18               214 	ld	(hl),#0x18
+   0136 21r3Er00            215 	ld	hl,#(_sprites + 0x003e)
+   0139 36 18               216 	ld	(hl),#0x18
+   013B 21r3Fr00            217 	ld	hl,#(_sprites + 0x003f)
+   013E 36 18               218 	ld	(hl),#0x18
+                            219 ;mapTiles.c:26: unsigned char mapTiles[] =
+   0140 21r40r00            220 	ld	hl,#_mapTiles
+   0143 36 00               221 	ld	(hl),#0x00
+   0145 01r41r00            222 	ld	bc,#_mapTiles + 1
+   0148 AF                  223 	xor	a, a
+   0149 02                  224 	ld	(bc),a
+   014A 01r42r00            225 	ld	bc,#_mapTiles + 2
+   014D AF                  226 	xor	a, a
+   014E 02                  227 	ld	(bc),a
+   014F 01r43r00            228 	ld	bc,#_mapTiles + 3
+   0152 AF                  229 	xor	a, a
+   0153 02                  230 	ld	(bc),a
+   0154 01r44r00            231 	ld	bc,#_mapTiles + 4
+   0157 AF                  232 	xor	a, a
+   0158 02                  233 	ld	(bc),a
+   0159 01r45r00            234 	ld	bc,#_mapTiles + 5
+   015C AF                  235 	xor	a, a
+   015D 02                  236 	ld	(bc),a
+   015E 01r46r00            237 	ld	bc,#_mapTiles + 6
+   0161 AF                  238 	xor	a, a
+   0162 02                  239 	ld	(bc),a
+   0163 01r47r00            240 	ld	bc,#_mapTiles + 7
+   0166 AF                  241 	xor	a, a
+   0167 02                  242 	ld	(bc),a
+   0168 01r48r00            243 	ld	bc,#_mapTiles + 8
+   016B AF                  244 	xor	a, a
+   016C 02                  245 	ld	(bc),a
+   016D 01r49r00            246 	ld	bc,#_mapTiles + 9
+   0170 AF                  247 	xor	a, a
+   0171 02                  248 	ld	(bc),a
+   0172 01r4Ar00            249 	ld	bc,#_mapTiles + 10
+   0175 AF                  250 	xor	a, a
+   0176 02                  251 	ld	(bc),a
+   0177 01r4Br00            252 	ld	bc,#_mapTiles + 11
+   017A AF                  253 	xor	a, a
+   017B 02                  254 	ld	(bc),a
+   017C 01r4Cr00            255 	ld	bc,#_mapTiles + 12
+   017F AF                  256 	xor	a, a
+   0180 02                  257 	ld	(bc),a
+   0181 01r4Dr00            258 	ld	bc,#_mapTiles + 13
+   0184 AF                  259 	xor	a, a
+   0185 02                  260 	ld	(bc),a
+   0186 01r4Er00            261 	ld	bc,#_mapTiles + 14
+   0189 AF                  262 	xor	a, a
+   018A 02                  263 	ld	(bc),a
+   018B 01r4Fr00            264 	ld	bc,#_mapTiles + 15
+   018E AF                  265 	xor	a, a
+   018F 02                  266 	ld	(bc),a
+                            267 ;--------------------------------------------------------
+                            268 ; Home
+                            269 ;--------------------------------------------------------
+                            270 	.area _HOME
+                            271 	.area _HOME
+                            272 ;--------------------------------------------------------
+                            273 ; code
+                            274 ;--------------------------------------------------------
+                            275 	.area _CODE
+                            276 ;main.c:63: void main() {
+                            277 ;	---------------------------------
+                            278 ; Function main
+                            279 ; ---------------------------------
+   0000                     280 _main::
+                            281 ;main.c:65: init();
+   0000 CDr18r00            282 	call	_init
+                            283 ;main.c:67: while(1) {
+   0003                     284 00102$:
+                            285 ;main.c:69: checkInput();				// Check for user input (and act on it)
+   0003 CDr9Dr01            286 	call	_checkInput
+                            287 ;main.c:70: updateBullets();
+   0006 CDr34r02            288 	call	_updateBullets
+                            289 ;main.c:71: updateEnemies();
+   0009 CDrC3r02            290 	call	_updateEnemies
+                            291 ;main.c:72: checkCollisions();
+   000C CDrD2r03            292 	call	_checkCollisions
+                            293 ;main.c:73: updateSwitches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
+   000F CDr71r01            294 	call	_updateSwitches
+                            295 ;main.c:74: wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory
+   0012 CDr00r00            296 	call	_wait_vbl_done
+   0015 18 EC               297 	jr	00102$
+   0017 C9                  298 	ret
+                            299 ;main.c:79: void init() {
+                            300 ;	---------------------------------
+                            301 ; Function init
+                            302 ; ---------------------------------
+   0018                     303 _init::
+                            304 ;main.c:81: DISPLAY_ON;						// Turn on the display
+   0018 11 40 FF            305 	ld	de,#0xFF40
+   001B 1A                  306 	ld	a,(de)
+   001C 5F                  307 	ld	e,a
+   001D 16 00               308 	ld	d,#0x00
+   001F 7B                  309 	ld	a,e
+   0020 CB FF               310 	set	7, a
+   0022 47                  311 	ld	b,a
+   0023 21 40 FF            312 	ld	hl,#0xFF40
+   0026 70                  313 	ld	(hl),b
+                            314 ;main.c:83: set_bkg_data(0,1, mapTiles);
+   0027 11r40r00            315 	ld	de,#_mapTiles
+   002A D5                  316 	push	de
+   002B 21 00 01            317 	ld	hl,#0x0100
+   002E E5                  318 	push	hl
+   002F CDr00r00            319 	call	_set_bkg_data
+   0032 E8 04               320 	add	sp, #4
+                            321 ;main.c:86: spriteCount = 0;
+   0034 21r50r00            322 	ld	hl,#_spriteCount
+   0037 36 00               323 	ld	(hl),#0x00
+                            324 ;main.c:87: set_sprite_data(0, 4, sprites);
+   0039 11r00r00            325 	ld	de,#_sprites
+   003C D5                  326 	push	de
+   003D 21 00 04            327 	ld	hl,#0x0400
+   0040 E5                  328 	push	hl
+   0041 CDr00r00            329 	call	_set_sprite_data
+   0044 E8 04               330 	add	sp, #4
+                            331 ;main.c:90: set_sprite_tile(PLAYER_SPRITE, PLAYER_TILE);
+   0046 21 00 01            332 	ld	hl,#0x0100
+   0049 E5                  333 	push	hl
+   004A CDr00r00            334 	call	_set_sprite_tile
+   004D E8 02               335 	add	sp, #2
+                            336 ;main.c:91: spriteCount++;
+   004F 21r50r00            337 	ld	hl,#_spriteCount
+   0052 34                  338 	inc	(hl)
+                            339 ;main.c:93: playerPos[X] = PLAYER_SPAWN_X;
+   0053 21r51r00            340 	ld	hl,#_playerPos
+   0056 36 50               341 	ld	(hl),#0x50
+                            342 ;main.c:94: playerPos[Y] = PLAYER_SPAWN_Y;
+   0058 21r52r00            343 	ld	hl,#(_playerPos + 0x0001)
+   005B 36 80               344 	ld	(hl),#0x80
+                            345 ;main.c:96: initBullets();
+   005D CDr63r00            346 	call	_initBullets
+                            347 ;main.c:97: initEnemies();
+   0060 C3rDDr00            348 	jp	_initEnemies
+                            349 ;main.c:100: void initBullets()
+                            350 ;	---------------------------------
+                            351 ; Function initBullets
+                            352 ; ---------------------------------
+   0063                     353 _initBullets::
+   0063 E8 FD               354 	add	sp, #-3
+                            355 ;main.c:103: for(i = 0; i < MAX_BULLETS; i++)
+   0065 F8 00               356 	ldhl	sp,#0
+   0067 36 00               357 	ld	(hl),#0x00
+   0069                     358 00102$:
+                            359 ;main.c:105: bullets[i].xPos = 0;
+   0069 F8 00               360 	ldhl	sp,#0
+   006B 4E                  361 	ld	c,(hl)
+   006C 06 00               362 	ld	b,#0x00
+   006E CB 21               363 	sla	c
+   0070 CB 10               364 	rl	b
+   0072 CB 21               365 	sla	c
+   0074 CB 10               366 	rl	b
+   0076 21r53r00            367 	ld	hl,#_bullets
+   0079 09                  368 	add	hl,bc
+   007A 7D                  369 	ld	a,l
+   007B 54                  370 	ld	d,h
+   007C F8 01               371 	ldhl	sp,#1
+   007E 22                  372 	ld	(hl+),a
+   007F 72                  373 	ld	(hl),d
+   0080 2B                  374 	dec	hl
+   0081 2A                  375 	ld	a,(hl+)
+   0082 66                  376 	ld	h,(hl)
+   0083 6F                  377 	ld	l,a
+   0084 36 00               378 	ld	(hl),#0x00
+                            379 ;main.c:106: bullets[i].yPos = 0;
+   0086 F8 02               380 	ldhl	sp,#2
+   0088 2B                  381 	dec	hl
+   0089 4E                  382 	ld	c,(hl)
+   008A 23                  383 	inc	hl
+   008B 46                  384 	ld	b,(hl)
+   008C 03                  385 	inc	bc
+   008D AF                  386 	xor	a, a
+   008E 02                  387 	ld	(bc),a
+                            388 ;main.c:107: bullets[i].sprite = spriteCount;
+   008F 2B                  389 	dec	hl
+   0090 4E                  390 	ld	c,(hl)
+   0091 23                  391 	inc	hl
+   0092 46                  392 	ld	b,(hl)
+   0093 03                  393 	inc	bc
+   0094 03                  394 	inc	bc
+   0095 21r50r00            395 	ld	hl,#_spriteCount
+   0098 7E                  396 	ld	a,(hl)
+   0099 02                  397 	ld	(bc),a
+                            398 ;main.c:108: bullets[i].active = 0;
+   009A F8 02               399 	ldhl	sp,#2
+   009C 2B                  400 	dec	hl
+   009D 4E                  401 	ld	c,(hl)
+   009E 23                  402 	inc	hl
+   009F 46                  403 	ld	b,(hl)
+   00A0 03                  404 	inc	bc
+   00A1 03                  405 	inc	bc
+   00A2 03                  406 	inc	bc
+   00A3 AF                  407 	xor	a, a
+   00A4 02                  408 	ld	(bc),a
+                            409 ;main.c:109: set_sprite_tile(spriteCount, BULLET_TILE);
+   00A5 3E 02               410 	ld	a,#0x02
+   00A7 F5                  411 	push	af
+   00A8 33                  412 	inc	sp
+   00A9 21r50r00            413 	ld	hl,#_spriteCount
+   00AC 7E                  414 	ld	a,(hl)
+   00AD F5                  415 	push	af
+   00AE 33                  416 	inc	sp
+   00AF CDr00r00            417 	call	_set_sprite_tile
+   00B2 E8 02               418 	add	sp, #2
+                            419 ;main.c:110: move_sprite(spriteCount, 16*i, 20);
+   00B4 F8 00               420 	ldhl	sp,#0
+   00B6 7E                  421 	ld	a,(hl)
+   00B7 CB 37               422 	swap	a
+   00B9 E6 F0               423 	and	a,#0xF0
+   00BB 57                  424 	ld	d,a
+   00BC 3E 14               425 	ld	a,#0x14
+   00BE F5                  426 	push	af
+   00BF 33                  427 	inc	sp
+   00C0 D5                  428 	push	de
+   00C1 33                  429 	inc	sp
+   00C2 21r50r00            430 	ld	hl,#_spriteCount
+   00C5 7E                  431 	ld	a,(hl)
+   00C6 F5                  432 	push	af
+   00C7 33                  433 	inc	sp
+   00C8 CDr00r00            434 	call	_move_sprite
+   00CB E8 03               435 	add	sp, #3
+                            436 ;main.c:111: spriteCount++;
+   00CD 21r50r00            437 	ld	hl,#_spriteCount
+   00D0 34                  438 	inc	(hl)
+                            439 ;main.c:103: for(i = 0; i < MAX_BULLETS; i++)
+   00D1 F8 00               440 	ldhl	sp,#0
+   00D3 34                  441 	inc	(hl)
+   00D4 7E                  442 	ld	a,(hl)
+   00D5 D6 0A               443 	sub	a, #0x0A
+   00D7 DAr69r00            444 	jp	C,00102$
+   00DA E8 03               445 	add	sp, #3
+   00DC C9                  446 	ret
+                            447 ;main.c:115: void initEnemies()
+                            448 ;	---------------------------------
+                            449 ; Function initEnemies
+                            450 ; ---------------------------------
+   00DD                     451 _initEnemies::
+   00DD E8 FA               452 	add	sp, #-6
+                            453 ;main.c:118: for(i = 0; i < MAX_ENEMIES; i++)
+   00DF F8 00               454 	ldhl	sp,#0
+   00E1 36 00               455 	ld	(hl),#0x00
+   00E3                     456 00102$:
+                            457 ;main.c:120: enemies[i].xPos = (i+1)*16;
+   00E3 F8 00               458 	ldhl	sp,#0
+   00E5 4E                  459 	ld	c,(hl)
+   00E6 06 00               460 	ld	b,#0x00
+   00E8 CB 21               461 	sla	c
+   00EA CB 10               462 	rl	b
+   00EC CB 21               463 	sla	c
+   00EE CB 10               464 	rl	b
+   00F0 21r7Cr00            465 	ld	hl,#_enemies
+   00F3 09                  466 	add	hl,bc
+   00F4 4D                  467 	ld	c,l
+   00F5 44                  468 	ld	b,h
+   00F6 F8 00               469 	ldhl	sp,#0
+   00F8 7E                  470 	ld	a,(hl)
+   00F9 3C                  471 	inc	a
+   00FA 23                  472 	inc	hl
+   00FB 77                  473 	ld	(hl),a
+   00FC 7E                  474 	ld	a,(hl)
+   00FD CB 37               475 	swap	a
+   00FF E6 F0               476 	and	a,#0xF0
+   0101 02                  477 	ld	(bc),a
+                            478 ;main.c:121: enemies[i].yPos = 0;
+   0102 21 01 00            479 	ld	hl,#0x0001
+   0105 09                  480 	add	hl,bc
+   0106 7D                  481 	ld	a,l
+   0107 54                  482 	ld	d,h
+   0108 F8 04               483 	ldhl	sp,#4
+   010A 22                  484 	ld	(hl+),a
+   010B 72                  485 	ld	(hl),d
+   010C 2B                  486 	dec	hl
+   010D 2A                  487 	ld	a,(hl+)
+   010E 66                  488 	ld	h,(hl)
+   010F 6F                  489 	ld	l,a
+   0110 36 00               490 	ld	(hl),#0x00
+                            491 ;main.c:122: enemies[i].sprite = spriteCount;
+   0112 21 02 00            492 	ld	hl,#0x0002
+   0115 09                  493 	add	hl,bc
+   0116 7D                  494 	ld	a,l
+   0117 54                  495 	ld	d,h
+   0118 F8 02               496 	ldhl	sp,#2
+   011A 22                  497 	ld	(hl+),a
+   011B 72                  498 	ld	(hl),d
+   011C 2B                  499 	dec	hl
+   011D 5E                  500 	ld	e,(hl)
+   011E 23                  501 	inc	hl
+   011F 56                  502 	ld	d,(hl)
+   0120 21r50r00            503 	ld	hl,#_spriteCount
+   0123 7E                  504 	ld	a,(hl)
+   0124 12                  505 	ld	(de),a
+                            506 ;main.c:123: enemies[i].active = 0;
+   0125 21 03 00            507 	ld	hl,#0x0003
+   0128 09                  508 	add	hl,bc
+   0129 7D                  509 	ld	a,l
+   012A 54                  510 	ld	d,h
+   012B F8 02               511 	ldhl	sp,#2
+   012D 22                  512 	ld	(hl+),a
+   012E 72                  513 	ld	(hl),d
+   012F 2B                  514 	dec	hl
+   0130 2A                  515 	ld	a,(hl+)
+   0131 66                  516 	ld	h,(hl)
+   0132 6F                  517 	ld	l,a
+   0133 36 00               518 	ld	(hl),#0x00
+                            519 ;main.c:124: set_sprite_tile(spriteCount, ENEMY_TILE);
+   0135 C5                  520 	push	bc
+   0136 3E 03               521 	ld	a,#0x03
+   0138 F5                  522 	push	af
+   0139 33                  523 	inc	sp
+   013A 21r50r00            524 	ld	hl,#_spriteCount
+   013D 7E                  525 	ld	a,(hl)
+   013E F5                  526 	push	af
+   013F 33                  527 	inc	sp
+   0140 CDr00r00            528 	call	_set_sprite_tile
+   0143 E8 02               529 	add	sp, #2
+   0145 C1                  530 	pop	bc
+                            531 ;main.c:125: move_sprite(spriteCount, enemies[i].xPos, enemies[i].yPos);
+   0146 F8 05               532 	ldhl	sp,#5
+   0148 2B                  533 	dec	hl
+   0149 5E                  534 	ld	e,(hl)
+   014A 23                  535 	inc	hl
+   014B 56                  536 	ld	d,(hl)
+   014C 1A                  537 	ld	a,(de)
+   014D F5                  538 	push	af
+   014E 0A                  539 	ld	a,(bc)
+   014F 57                  540 	ld	d,a
+   0150 F1                  541 	pop	af
+   0151 F5                  542 	push	af
+   0152 33                  543 	inc	sp
+   0153 D5                  544 	push	de
+   0154 33                  545 	inc	sp
+   0155 21r50r00            546 	ld	hl,#_spriteCount
+   0158 7E                  547 	ld	a,(hl)
+   0159 F5                  548 	push	af
+   015A 33                  549 	inc	sp
+   015B CDr00r00            550 	call	_move_sprite
+   015E E8 03               551 	add	sp, #3
+                            552 ;main.c:126: spriteCount++;
+   0160 21r50r00            553 	ld	hl,#_spriteCount
+   0163 34                  554 	inc	(hl)
+                            555 ;main.c:118: for(i = 0; i < MAX_ENEMIES; i++)
+   0164 F8 01               556 	ldhl	sp,#1
+   0166 3A                  557 	ld	a,(hl-)
+   0167 77                  558 	ld	(hl),a
+   0168 7E                  559 	ld	a,(hl)
+   0169 D6 07               560 	sub	a, #0x07
+   016B DArE3r00            561 	jp	C,00102$
+   016E E8 06               562 	add	sp, #6
+   0170 C9                  563 	ret
+                            564 ;main.c:130: void updateSwitches() {
+                            565 ;	---------------------------------
+                            566 ; Function updateSwitches
+                            567 ; ---------------------------------
+   0171                     568 _updateSwitches::
+                            569 ;main.c:132: HIDE_WIN;
+   0171 11 40 FF            570 	ld	de,#0xFF40
+   0174 1A                  571 	ld	a,(de)
+   0175 47                  572 	ld	b,a
+   0176 16 00               573 	ld	d,#0x00
+   0178 CB A8               574 	res	5, b
+   017A 16 00               575 	ld	d,#0x00
+   017C 21 40 FF            576 	ld	hl,#0xFF40
+   017F 70                  577 	ld	(hl),b
+                            578 ;main.c:133: SHOW_SPRITES;
+   0180 11 40 FF            579 	ld	de,#0xFF40
+   0183 1A                  580 	ld	a,(de)
+   0184 5F                  581 	ld	e,a
+   0185 16 00               582 	ld	d,#0x00
+   0187 7B                  583 	ld	a,e
+   0188 CB CF               584 	set	1, a
+   018A 47                  585 	ld	b,a
+   018B 2E 40               586 	ld	l, #0x40
+   018D 70                  587 	ld	(hl),b
+                            588 ;main.c:134: SHOW_BKG;
+   018E 11 40 FF            589 	ld	de,#0xFF40
+   0191 1A                  590 	ld	a,(de)
+   0192 5F                  591 	ld	e,a
+   0193 16 00               592 	ld	d,#0x00
+   0195 7B                  593 	ld	a,e
+   0196 CB C7               594 	set	0, a
+   0198 47                  595 	ld	b,a
+   0199 2E 40               596 	ld	l, #0x40
+   019B 70                  597 	ld	(hl),b
+   019C C9                  598 	ret
+                            599 ;main.c:137: void checkInput() {
+                            600 ;	---------------------------------
+                            601 ; Function checkInput
+                            602 ; ---------------------------------
+   019D                     603 _checkInput::
+                            604 ;main.c:140: if (joypad() & J_LEFT) {
+   019D CDr00r00            605 	call	_joypad
+   01A0 16 00               606 	ld	d,#0x00
+   01A2 CB 4B               607 	bit	1, e
+   01A4 28 09               608 	jr	Z,00102$
+                            609 ;main.c:142: playerPos[X]--;
+   01A6 FAr51r00            610 	ld	a, (#_playerPos + 0)
+   01A9 C6 FF               611 	add	a,#0xFF
+   01AB 11r51r00            612 	ld	de,#_playerPos
+   01AE 12                  613 	ld	(de),a
+   01AF                     614 00102$:
+                            615 ;main.c:147: if (joypad() & J_RIGHT) {
+   01AF CDr00r00            616 	call	_joypad
+   01B2 16 00               617 	ld	d,#0x00
+   01B4 CB 43               618 	bit	0, e
+   01B6 28 06               619 	jr	Z,00104$
+                            620 ;main.c:149: playerPos[X]++;
+   01B8 11r51r00            621 	ld	de,#_playerPos+0
+   01BB 1A                  622 	ld	a,(de)
+   01BC 3C                  623 	inc	a
+   01BD 12                  624 	ld	(de),a
+   01BE                     625 00104$:
+                            626 ;main.c:154: if (joypad() & J_B) {
+   01BE CDr00r00            627 	call	_joypad
+   01C1 16 00               628 	ld	d,#0x00
+   01C3 CB 6B               629 	bit	5, e
+   01C5 28 10               630 	jr	Z,00108$
+                            631 ;main.c:155: if(bulletCooldown > BULLET_COOLDOWN)
+   01C7 3E 1E               632 	ld	a,#0x1E
+   01C9 21r7Br00            633 	ld	hl,#_bulletCooldown
+   01CC 96                  634 	sub	a, (hl)
+   01CD 30 08               635 	jr	NC,00108$
+                            636 ;main.c:157: fireBullet();
+   01CF CDrECr01            637 	call	_fireBullet
+                            638 ;main.c:158: bulletCooldown = 0;
+   01D2 21r7Br00            639 	ld	hl,#_bulletCooldown
+   01D5 36 00               640 	ld	(hl),#0x00
+   01D7                     641 00108$:
+                            642 ;main.c:162: move_sprite(PLAYER_SPRITE, playerPos[X], playerPos[Y]);
+   01D7 11r52r00            643 	ld	de, #(_playerPos + 0x0001) + 0
+   01DA 1A                  644 	ld	a,(de)
+   01DB 47                  645 	ld	b,a
+   01DC FAr51r00            646 	ld	a, (#_playerPos + 0)
+   01DF C5                  647 	push	bc
+   01E0 33                  648 	inc	sp
+   01E1 F5                  649 	push	af
+   01E2 33                  650 	inc	sp
+   01E3 AF                  651 	xor	a, a
+   01E4 F5                  652 	push	af
+   01E5 33                  653 	inc	sp
+   01E6 CDr00r00            654 	call	_move_sprite
+   01E9 E8 03               655 	add	sp, #3
+   01EB C9                  656 	ret
+                            657 ;main.c:165: void fireBullet()
+                            658 ;	---------------------------------
+                            659 ; Function fireBullet
+                            660 ; ---------------------------------
+   01EC                     661 _fireBullet::
+   01EC E8 FD               662 	add	sp, #-3
+                            663 ;main.c:168: for(i = 0; i < MAX_BULLETS; i++) {
+   01EE F8 00               664 	ldhl	sp,#0
+   01F0 36 00               665 	ld	(hl),#0x00
+   01F2                     666 00104$:
+                            667 ;main.c:169: if(bullets[i].active == 0)
+   01F2 F8 00               668 	ldhl	sp,#0
+   01F4 4E                  669 	ld	c,(hl)
+   01F5 06 00               670 	ld	b,#0x00
+   01F7 CB 21               671 	sla	c
+   01F9 CB 10               672 	rl	b
+   01FB CB 21               673 	sla	c
+   01FD CB 10               674 	rl	b
+   01FF 21r53r00            675 	ld	hl,#_bullets
+   0202 09                  676 	add	hl,bc
+   0203 4D                  677 	ld	c,l
+   0204 44                  678 	ld	b,h
+   0205 21 03 00            679 	ld	hl,#0x0003
+   0208 09                  680 	add	hl,bc
+   0209 7D                  681 	ld	a,l
+   020A 54                  682 	ld	d,h
+   020B F8 01               683 	ldhl	sp,#1
+   020D 22                  684 	ld	(hl+),a
+   020E 72                  685 	ld	(hl),d
+   020F 2B                  686 	dec	hl
+   0210 5E                  687 	ld	e,(hl)
+   0211 23                  688 	inc	hl
+   0212 56                  689 	ld	d,(hl)
+   0213 1A                  690 	ld	a,(de)
+   0214 B7                  691 	or	a, a
+   0215 20 11               692 	jr	NZ,00105$
+                            693 ;main.c:171: bullets[i].xPos = playerPos[X];
+   0217 FAr51r00            694 	ld	a, (#_playerPos + 0)
+   021A 02                  695 	ld	(bc),a
+                            696 ;main.c:172: bullets[i].yPos = playerPos[Y];
+   021B 03                  697 	inc	bc
+   021C FAr52r00            698 	ld	a, (#(_playerPos + 0x0001) + 0)
+   021F 02                  699 	ld	(bc),a
+                            700 ;main.c:173: bullets[i].active = 1;
+   0220 2B                  701 	dec	hl
+   0221 2A                  702 	ld	a,(hl+)
+   0222 66                  703 	ld	h,(hl)
+   0223 6F                  704 	ld	l,a
+   0224 36 01               705 	ld	(hl),#0x01
+                            706 ;main.c:174: return;
+   0226 18 09               707 	jr	00106$
+   0228                     708 00105$:
+                            709 ;main.c:168: for(i = 0; i < MAX_BULLETS; i++) {
+   0228 F8 00               710 	ldhl	sp,#0
+   022A 34                  711 	inc	(hl)
+   022B 7E                  712 	ld	a,(hl)
+   022C D6 0A               713 	sub	a, #0x0A
+   022E DArF2r01            714 	jp	C,00104$
+   0231                     715 00106$:
+   0231 E8 03               716 	add	sp, #3
+   0233 C9                  717 	ret
+                            718 ;main.c:179: void updateBullets()
+                            719 ;	---------------------------------
+                            720 ; Function updateBullets
+                            721 ; ---------------------------------
+   0234                     722 _updateBullets::
+   0234 E8 FA               723 	add	sp, #-6
+                            724 ;main.c:182: for(i = 0; i < MAX_BULLETS; i++) {
+   0236 F8 00               725 	ldhl	sp,#0
+   0238 36 00               726 	ld	(hl),#0x00
+   023A                     727 00107$:
+                            728 ;main.c:183: if(bullets[i].active == 0) {
+   023A F8 00               729 	ldhl	sp,#0
+   023C 4E                  730 	ld	c,(hl)
+   023D 06 00               731 	ld	b,#0x00
+   023F CB 21               732 	sla	c
+   0241 CB 10               733 	rl	b
+   0243 CB 21               734 	sla	c
+   0245 CB 10               735 	rl	b
+   0247 21r53r00            736 	ld	hl,#_bullets
+   024A 09                  737 	add	hl,bc
+   024B 7D                  738 	ld	a,l
+   024C 54                  739 	ld	d,h
+   024D F8 01               740 	ldhl	sp,#1
+   024F 22                  741 	ld	(hl+),a
+   0250 72                  742 	ld	(hl),d
+   0251 2B                  743 	dec	hl
+   0252 5E                  744 	ld	e,(hl)
+   0253 23                  745 	inc	hl
+   0254 56                  746 	ld	d,(hl)
+   0255 21 03 00            747 	ld	hl,#0x0003
+   0258 19                  748 	add	hl,de
+   0259 7D                  749 	ld	a,l
+   025A 54                  750 	ld	d,h
+   025B F8 04               751 	ldhl	sp,#4
+   025D 22                  752 	ld	(hl+),a
+   025E 72                  753 	ld	(hl),d
+   025F 2B                  754 	dec	hl
+   0260 5E                  755 	ld	e,(hl)
+   0261 23                  756 	inc	hl
+   0262 56                  757 	ld	d,(hl)
+   0263 1A                  758 	ld	a,(de)
+   0264 2B                  759 	dec	hl
+   0265 2B                  760 	dec	hl
+                            761 ;main.c:192: if(bullets[i].yPos < 8) {
+   0266 32                  762 	ld	(hl-),a
+   0267 2B                  763 	dec	hl
+   0268 4E                  764 	ld	c,(hl)
+   0269 23                  765 	inc	hl
+   026A 46                  766 	ld	b,(hl)
+   026B 03                  767 	inc	bc
+                            768 ;main.c:183: if(bullets[i].active == 0) {
+   026C 23                  769 	inc	hl
+   026D 7E                  770 	ld	a,(hl)
+   026E B7                  771 	or	a, a
+   026F 20 0B               772 	jr	NZ,00102$
+                            773 ;main.c:184: bullets[i].xPos = 0;
+   0271 2B                  774 	dec	hl
+   0272 2B                  775 	dec	hl
+   0273 2A                  776 	ld	a,(hl+)
+   0274 66                  777 	ld	h,(hl)
+   0275 6F                  778 	ld	l,a
+   0276 36 00               779 	ld	(hl),#0x00
+                            780 ;main.c:185: bullets[i].yPos = 0;
+   0278 AF                  781 	xor	a, a
+   0279 02                  782 	ld	(bc),a
+   027A 18 04               783 	jr	00103$
+   027C                     784 00102$:
+                            785 ;main.c:189: bullets[i].yPos --;
+   027C 0A                  786 	ld	a,(bc)
+   027D C6 FF               787 	add	a,#0xFF
+   027F 02                  788 	ld	(bc),a
+   0280                     789 00103$:
+                            790 ;main.c:192: if(bullets[i].yPos < 8) {
+   0280 0A                  791 	ld	a,(bc)
+   0281 F8 03               792 	ldhl	sp,#3
+   0283 77                  793 	ld	(hl),a
+   0284 7E                  794 	ld	a,(hl)
+   0285 D6 08               795 	sub	a, #0x08
+   0287 30 06               796 	jr	NC,00105$
+                            797 ;main.c:193: bullets[i].active = 0;
+   0289 23                  798 	inc	hl
+   028A 2A                  799 	ld	a,(hl+)
+   028B 66                  800 	ld	h,(hl)
+   028C 6F                  801 	ld	l,a
+   028D 36 00               802 	ld	(hl),#0x00
+   028F                     803 00105$:
+                            804 ;main.c:196: move_sprite(bullets[i].sprite, bullets[i].xPos, bullets[i].yPos);
+   028F 0A                  805 	ld	a,(bc)
+   0290 F8 03               806 	ldhl	sp,#3
+   0292 32                  807 	ld	(hl-),a
+   0293 2B                  808 	dec	hl
+   0294 5E                  809 	ld	e,(hl)
+   0295 23                  810 	inc	hl
+   0296 56                  811 	ld	d,(hl)
+   0297 1A                  812 	ld	a,(de)
+   0298 23                  813 	inc	hl
+   0299 23                  814 	inc	hl
+   029A 32                  815 	ld	(hl-),a
+   029B 2B                  816 	dec	hl
+   029C 2B                  817 	dec	hl
+   029D 4E                  818 	ld	c,(hl)
+   029E 23                  819 	inc	hl
+   029F 46                  820 	ld	b,(hl)
+   02A0 03                  821 	inc	bc
+   02A1 03                  822 	inc	bc
+   02A2 0A                  823 	ld	a,(bc)
+   02A3 57                  824 	ld	d,a
+   02A4 23                  825 	inc	hl
+   02A5 7E                  826 	ld	a,(hl)
+   02A6 F5                  827 	push	af
+   02A7 33                  828 	inc	sp
+   02A8 23                  829 	inc	hl
+   02A9 7E                  830 	ld	a,(hl)
+   02AA F5                  831 	push	af
+   02AB 33                  832 	inc	sp
+   02AC D5                  833 	push	de
+   02AD 33                  834 	inc	sp
+   02AE CDr00r00            835 	call	_move_sprite
+   02B1 E8 03               836 	add	sp, #3
+                            837 ;main.c:182: for(i = 0; i < MAX_BULLETS; i++) {
+   02B3 F8 00               838 	ldhl	sp,#0
+   02B5 34                  839 	inc	(hl)
+   02B6 7E                  840 	ld	a,(hl)
+   02B7 D6 0A               841 	sub	a, #0x0A
+   02B9 DAr3Ar02            842 	jp	C,00107$
+                            843 ;main.c:199: bulletCooldown++;
+   02BC 21r7Br00            844 	ld	hl,#_bulletCooldown
+   02BF 34                  845 	inc	(hl)
+   02C0 E8 06               846 	add	sp, #6
+   02C2 C9                  847 	ret
+                            848 ;main.c:202: void updateEnemies()
+                            849 ;	---------------------------------
+                            850 ; Function updateEnemies
+                            851 ; ---------------------------------
+   02C3                     852 _updateEnemies::
+   02C3 E8 FA               853 	add	sp, #-6
+                            854 ;main.c:206: if(enemyUpdateCooldown > ENEMY_UPDATE_COOLDOWN) {
+   02C5 3E 01               855 	ld	a,#0x01
+   02C7 21r98r00            856 	ld	hl,#_enemyUpdateCooldown
+   02CA 96                  857 	sub	a, (hl)
+   02CB D2r67r03            858 	jp	NC,00108$
+                            859 ;main.c:208: enemyUpdateCooldown = 0;
+   02CE 36 00               860 	ld	(hl),#0x00
+                            861 ;main.c:210: for(i = 0; i < MAX_ENEMIES; i++)
+   02D0 F8 00               862 	ldhl	sp,#0
+   02D2 36 00               863 	ld	(hl),#0x00
+   02D4                     864 00116$:
+                            865 ;main.c:212: if(enemies[i].active == 0) {
+   02D4 F8 00               866 	ldhl	sp,#0
+   02D6 4E                  867 	ld	c,(hl)
+   02D7 06 00               868 	ld	b,#0x00
+   02D9 CB 21               869 	sla	c
+   02DB CB 10               870 	rl	b
+   02DD CB 21               871 	sla	c
+   02DF CB 10               872 	rl	b
+   02E1 21r7Cr00            873 	ld	hl,#_enemies
+   02E4 09                  874 	add	hl,bc
+   02E5 7D                  875 	ld	a,l
+   02E6 54                  876 	ld	d,h
+   02E7 F8 04               877 	ldhl	sp,#4
+   02E9 22                  878 	ld	(hl+),a
+   02EA 72                  879 	ld	(hl),d
+   02EB 2B                  880 	dec	hl
+   02EC 5E                  881 	ld	e,(hl)
+   02ED 23                  882 	inc	hl
+   02EE 56                  883 	ld	d,(hl)
+   02EF 21 03 00            884 	ld	hl,#0x0003
+   02F2 19                  885 	add	hl,de
+   02F3 7D                  886 	ld	a,l
+   02F4 54                  887 	ld	d,h
+   02F5 F8 02               888 	ldhl	sp,#2
+   02F7 22                  889 	ld	(hl+),a
+   02F8 72                  890 	ld	(hl),d
+   02F9 2B                  891 	dec	hl
+   02FA 5E                  892 	ld	e,(hl)
+   02FB 23                  893 	inc	hl
+   02FC 56                  894 	ld	d,(hl)
+   02FD 1A                  895 	ld	a,(de)
+   02FE 2B                  896 	dec	hl
+   02FF 2B                  897 	dec	hl
+   0300 77                  898 	ld	(hl),a
+                            899 ;main.c:221: if(enemies[i].yPos > 160) {
+   0301 F8 05               900 	ldhl	sp,#5
+   0303 2B                  901 	dec	hl
+   0304 4E                  902 	ld	c,(hl)
+   0305 23                  903 	inc	hl
+   0306 46                  904 	ld	b,(hl)
+   0307 03                  905 	inc	bc
+                            906 ;main.c:212: if(enemies[i].active == 0) {
+   0308 F8 01               907 	ldhl	sp,#1
+   030A 7E                  908 	ld	a,(hl)
+   030B B7                  909 	or	a, a
+   030C 20 0B               910 	jr	NZ,00102$
+                            911 ;main.c:213: enemies[i].xPos = 0;
+   030E F8 04               912 	ldhl	sp,#4
+   0310 2A                  913 	ld	a,(hl+)
+   0311 66                  914 	ld	h,(hl)
+   0312 6F                  915 	ld	l,a
+   0313 36 00               916 	ld	(hl),#0x00
+                            917 ;main.c:214: enemies[i].yPos = 0;
+   0315 AF                  918 	xor	a, a
+   0316 02                  919 	ld	(bc),a
+   0317 18 03               920 	jr	00103$
+   0319                     921 00102$:
+                            922 ;main.c:218: enemies[i].yPos++;
+   0319 0A                  923 	ld	a,(bc)
+   031A 3C                  924 	inc	a
+   031B 02                  925 	ld	(bc),a
+   031C                     926 00103$:
+                            927 ;main.c:221: if(enemies[i].yPos > 160) {
+   031C 0A                  928 	ld	a,(bc)
+   031D F8 01               929 	ldhl	sp,#1
+   031F 77                  930 	ld	(hl),a
+   0320 3E A0               931 	ld	a,#0xA0
+   0322 96                  932 	sub	a, (hl)
+   0323 30 0F               933 	jr	NC,00105$
+                            934 ;main.c:222: enemies[i].active = 0;
+   0325 23                  935 	inc	hl
+   0326 2A                  936 	ld	a,(hl+)
+   0327 66                  937 	ld	h,(hl)
+   0328 6F                  938 	ld	l,a
+   0329 36 00               939 	ld	(hl),#0x00
+                            940 ;main.c:223: enemies[i].xPos = 0;
+   032B F8 04               941 	ldhl	sp,#4
+   032D 2A                  942 	ld	a,(hl+)
+   032E 66                  943 	ld	h,(hl)
+   032F 6F                  944 	ld	l,a
+   0330 36 00               945 	ld	(hl),#0x00
+                            946 ;main.c:224: enemies[i].yPos = 0;
+   0332 AF                  947 	xor	a, a
+   0333 02                  948 	ld	(bc),a
+   0334                     949 00105$:
+                            950 ;main.c:227: move_sprite(enemies[i].sprite, enemies[i].xPos, enemies[i].yPos);
+   0334 0A                  951 	ld	a,(bc)
+   0335 F8 01               952 	ldhl	sp,#1
+   0337 77                  953 	ld	(hl),a
+   0338 F8 05               954 	ldhl	sp,#5
+   033A 2B                  955 	dec	hl
+   033B 5E                  956 	ld	e,(hl)
+   033C 23                  957 	inc	hl
+   033D 56                  958 	ld	d,(hl)
+   033E 1A                  959 	ld	a,(de)
+   033F F8 02               960 	ldhl	sp,#2
+   0341 77                  961 	ld	(hl),a
+   0342 F8 05               962 	ldhl	sp,#5
+   0344 2B                  963 	dec	hl
+   0345 4E                  964 	ld	c,(hl)
+   0346 23                  965 	inc	hl
+   0347 46                  966 	ld	b,(hl)
+   0348 03                  967 	inc	bc
+   0349 03                  968 	inc	bc
+   034A 0A                  969 	ld	a,(bc)
+   034B 57                  970 	ld	d,a
+   034C F8 01               971 	ldhl	sp,#1
+   034E 7E                  972 	ld	a,(hl)
+   034F F5                  973 	push	af
+   0350 33                  974 	inc	sp
+   0351 23                  975 	inc	hl
+   0352 7E                  976 	ld	a,(hl)
+   0353 F5                  977 	push	af
+   0354 33                  978 	inc	sp
+   0355 D5                  979 	push	de
+   0356 33                  980 	inc	sp
+   0357 CDr00r00            981 	call	_move_sprite
+   035A E8 03               982 	add	sp, #3
+                            983 ;main.c:210: for(i = 0; i < MAX_ENEMIES; i++)
+   035C F8 00               984 	ldhl	sp,#0
+   035E 34                  985 	inc	(hl)
+   035F 7E                  986 	ld	a,(hl)
+   0360 D6 07               987 	sub	a, #0x07
+   0362 DArD4r02            988 	jp	C,00116$
+   0365 18 04               989 	jr	00109$
+   0367                     990 00108$:
+                            991 ;main.c:231: enemyUpdateCooldown++;
+   0367 21r98r00            992 	ld	hl,#_enemyUpdateCooldown
+   036A 34                  993 	inc	(hl)
+   036B                     994 00109$:
+                            995 ;main.c:234: if(enemySpawnTimer > ENEMY_SPAWN_TIME)
+   036B 3E 3C               996 	ld	a,#0x3C
+   036D 21r99r00            997 	ld	hl,#_enemySpawnTimer
+   0370 96                  998 	sub	a, (hl)
+   0371 D2rCBr03            999 	jp	NC,00114$
+                           1000 ;main.c:236: enemySpawnTimer = 0;
+   0374 36 00              1001 	ld	(hl),#0x00
+                           1002 ;main.c:237: for(i = 0; i < MAX_ENEMIES; i++) {
+   0376 F8 00              1003 	ldhl	sp,#0
+   0378 36 00              1004 	ld	(hl),#0x00
+   037A                    1005 00118$:
+                           1006 ;main.c:238: if(enemies[i].active == 0)
+   037A F8 00              1007 	ldhl	sp,#0
+   037C 4E                 1008 	ld	c,(hl)
+   037D 06 00              1009 	ld	b,#0x00
+   037F CB 21              1010 	sla	c
+   0381 CB 10              1011 	rl	b
+   0383 CB 21              1012 	sla	c
+   0385 CB 10              1013 	rl	b
+   0387 21r7Cr00           1014 	ld	hl,#_enemies
+   038A 09                 1015 	add	hl,bc
+   038B 7D                 1016 	ld	a,l
+   038C 54                 1017 	ld	d,h
+   038D F8 02              1018 	ldhl	sp,#2
+   038F 22                 1019 	ld	(hl+),a
+   0390 72                 1020 	ld	(hl),d
+   0391 2B                 1021 	dec	hl
+   0392 4E                 1022 	ld	c,(hl)
+   0393 23                 1023 	inc	hl
+   0394 46                 1024 	ld	b,(hl)
+   0395 03                 1025 	inc	bc
+   0396 03                 1026 	inc	bc
+   0397 03                 1027 	inc	bc
+   0398 0A                 1028 	ld	a,(bc)
+   0399 B7                 1029 	or	a, a
+   039A 20 24              1030 	jr	NZ,00119$
+                           1031 ;main.c:240: enemies[i].active = 1;
+   039C 3E 01              1032 	ld	a,#0x01
+   039E 02                 1033 	ld	(bc),a
+                           1034 ;main.c:241: enemies[i].yPos = 8;
+   039F 2B                 1035 	dec	hl
+   03A0 4E                 1036 	ld	c,(hl)
+   03A1 23                 1037 	inc	hl
+   03A2 46                 1038 	ld	b,(hl)
+   03A3 03                 1039 	inc	bc
+   03A4 3E 08              1040 	ld	a,#0x08
+   03A6 02                 1041 	ld	(bc),a
+                           1042 ;main.c:242: enemies[i].xPos = rand() %128+16;
+   03A7 CDr00r00           1043 	call	_rand
+   03AA 21 80 00           1044 	ld	hl,#0x0080
+   03AD E5                 1045 	push	hl
+   03AE D5                 1046 	push	de
+   03AF CDr00r00           1047 	call	__modsint
+   03B2 E8 04              1048 	add	sp, #4
+   03B4 7B                 1049 	ld	a,e
+   03B5 C6 10              1050 	add	a, #0x10
+   03B7 47                 1051 	ld	b,a
+   03B8 F8 02              1052 	ldhl	sp,#2
+   03BA 2A                 1053 	ld	a,(hl+)
+   03BB 66                 1054 	ld	h,(hl)
+   03BC 6F                 1055 	ld	l,a
+   03BD 70                 1056 	ld	(hl),b
+                           1057 ;main.c:243: break;
+   03BE 18 0F              1058 	jr	00120$
+   03C0                    1059 00119$:
+                           1060 ;main.c:237: for(i = 0; i < MAX_ENEMIES; i++) {
+   03C0 F8 00              1061 	ldhl	sp,#0
+   03C2 34                 1062 	inc	(hl)
+   03C3 7E                 1063 	ld	a,(hl)
+   03C4 D6 07              1064 	sub	a, #0x07
+   03C6 DAr7Ar03           1065 	jp	C,00118$
+   03C9 18 04              1066 	jr	00120$
+   03CB                    1067 00114$:
+                           1068 ;main.c:249: enemySpawnTimer++;
+   03CB 21r99r00           1069 	ld	hl,#_enemySpawnTimer
+   03CE 34                 1070 	inc	(hl)
+   03CF                    1071 00120$:
+   03CF E8 06              1072 	add	sp, #6
+   03D1 C9                 1073 	ret
+                           1074 ;main.c:253: void checkCollisions()
+                           1075 ;	---------------------------------
+                           1076 ; Function checkCollisions
+                           1077 ; ---------------------------------
+   03D2                    1078 _checkCollisions::
+   03D2 E8 EE              1079 	add	sp, #-18
+                           1080 ;main.c:258: for(i = 0; i < MAX_BULLETS; i++)
+   03D4 F8 00              1081 	ldhl	sp,#0
+   03D6 36 00              1082 	ld	(hl),#0x00
+   03D8                    1083 00118$:
+                           1084 ;main.c:260: if(bullets[i].active == 0)
+   03D8 F8 00              1085 	ldhl	sp,#0
+   03DA 4E                 1086 	ld	c,(hl)
+   03DB 06 00              1087 	ld	b,#0x00
+   03DD CB 21              1088 	sla	c
+   03DF CB 10              1089 	rl	b
+   03E1 CB 21              1090 	sla	c
+   03E3 CB 10              1091 	rl	b
+   03E5 21r53r00           1092 	ld	hl,#_bullets
+   03E8 09                 1093 	add	hl,bc
+   03E9 7D                 1094 	ld	a,l
+   03EA 54                 1095 	ld	d,h
+   03EB F8 06              1096 	ldhl	sp,#6
+   03ED 22                 1097 	ld	(hl+),a
+   03EE 72                 1098 	ld	(hl),d
+   03EF 2B                 1099 	dec	hl
+   03F0 5E                 1100 	ld	e,(hl)
+   03F1 23                 1101 	inc	hl
+   03F2 56                 1102 	ld	d,(hl)
+   03F3 21 03 00           1103 	ld	hl,#0x0003
+   03F6 19                 1104 	add	hl,de
+   03F7 7D                 1105 	ld	a,l
+   03F8 54                 1106 	ld	d,h
+   03F9 F8 04              1107 	ldhl	sp,#4
+   03FB 22                 1108 	ld	(hl+),a
+   03FC 72                 1109 	ld	(hl),d
+   03FD 2B                 1110 	dec	hl
+   03FE 5E                 1111 	ld	e,(hl)
+   03FF 23                 1112 	inc	hl
+   0400 56                 1113 	ld	d,(hl)
+   0401 1A                 1114 	ld	a,(de)
+   0402 B7                 1115 	or	a, a
+   0403 CAr4Dr05           1116 	jp	Z,00115$
+                           1117 ;main.c:266: for(j = 0; j < MAX_ENEMIES; j++) {
+   0406 F8 01              1118 	ldhl	sp,#1
+   0408 36 00              1119 	ld	(hl),#0x00
+   040A                    1120 00117$:
+                           1121 ;main.c:267: if(enemies[j].active == 0) {
+   040A F8 01              1122 	ldhl	sp,#1
+   040C 4E                 1123 	ld	c,(hl)
+   040D 06 00              1124 	ld	b,#0x00
+   040F CB 21              1125 	sla	c
+   0411 CB 10              1126 	rl	b
+   0413 CB 21              1127 	sla	c
+   0415 CB 10              1128 	rl	b
+   0417 21r7Cr00           1129 	ld	hl,#_enemies
+   041A 09                 1130 	add	hl,bc
+   041B 7D                 1131 	ld	a,l
+   041C 54                 1132 	ld	d,h
+   041D F8 02              1133 	ldhl	sp,#2
+   041F 22                 1134 	ld	(hl+),a
+   0420 72                 1135 	ld	(hl),d
+   0421 2B                 1136 	dec	hl
+   0422 5E                 1137 	ld	e,(hl)
+   0423 23                 1138 	inc	hl
+   0424 56                 1139 	ld	d,(hl)
+   0425 21 03 00           1140 	ld	hl,#0x0003
+   0428 19                 1141 	add	hl,de
+   0429 7D                 1142 	ld	a,l
+   042A 54                 1143 	ld	d,h
+   042B F8 10              1144 	ldhl	sp,#16
+   042D 22                 1145 	ld	(hl+),a
+   042E 72                 1146 	ld	(hl),d
+   042F 2B                 1147 	dec	hl
+   0430 5E                 1148 	ld	e,(hl)
+   0431 23                 1149 	inc	hl
+   0432 56                 1150 	ld	d,(hl)
+   0433 1A                 1151 	ld	a,(de)
+   0434 B7                 1152 	or	a, a
+   0435 CAr44r05           1153 	jp	Z,00113$
+                           1154 ;main.c:271: if(bullets[i].xPos > (enemies[j].xPos+8)) {
+   0438 F8 07              1155 	ldhl	sp,#7
+   043A 2B                 1156 	dec	hl
+   043B 5E                 1157 	ld	e,(hl)
+   043C 23                 1158 	inc	hl
+   043D 56                 1159 	ld	d,(hl)
+   043E 1A                 1160 	ld	a,(de)
+   043F 4F                 1161 	ld	c,a
+   0440 F8 03              1162 	ldhl	sp,#3
+   0442 2B                 1163 	dec	hl
+   0443 5E                 1164 	ld	e,(hl)
+   0444 23                 1165 	inc	hl
+   0445 56                 1166 	ld	d,(hl)
+   0446 1A                 1167 	ld	a,(de)
+   0447 F8 0E              1168 	ldhl	sp,#14
+   0449 22                 1169 	ld	(hl+),a
+   044A 36 00              1170 	ld	(hl),#0x00
+   044C 2B                 1171 	dec	hl
+   044D 5E                 1172 	ld	e,(hl)
+   044E 23                 1173 	inc	hl
+   044F 56                 1174 	ld	d,(hl)
+   0450 21 08 00           1175 	ld	hl,#0x0008
+   0453 19                 1176 	add	hl,de
+   0454 7D                 1177 	ld	a,l
+   0455 54                 1178 	ld	d,h
+   0456 F8 0C              1179 	ldhl	sp,#12
+   0458 22                 1180 	ld	(hl+),a
+   0459 72                 1181 	ld	(hl),d
+   045A 06 00              1182 	ld	b,#0x00
+   045C 2B                 1183 	dec	hl
+   045D 7E                 1184 	ld	a, (hl)
+   045E 91                 1185 	sub	a, c
+   045F 23                 1186 	inc	hl
+   0460 7E                 1187 	ld	a, (hl)
+   0461 98                 1188 	sbc	a, b
+   0462 56                 1189 	ld	d, (hl)
+   0463 78                 1190 	ld	a,b
+   0464 5F                 1191 	ld	e, a
+   0465 CB 7B              1192 	bit	7, e
+   0467 28 07              1193 	jr	Z,00159$
+   0469 CB 7A              1194 	bit	7, d
+   046B 20 08              1195 	jr	NZ,00160$
+   046D BF                 1196 	cp	a, a
+   046E 18 05              1197 	jr	00160$
+   0470                    1198 00159$:
+   0470 CB 7A              1199 	bit	7, d
+   0472 28 01              1200 	jr	Z,00160$
+   0474 37                 1201 	scf
+   0475                    1202 00160$:
+   0475 DAr44r05           1203 	jp	C,00113$
+                           1204 ;main.c:274: if(bullets[i].xPos + 8 < enemies[j].xPos) {
+   0478 21 08 00           1205 	ld	hl,#0x0008
+   047B 09                 1206 	add	hl,bc
+   047C 4D                 1207 	ld	c,l
+   047D 44                 1208 	ld	b,h
+   047E F8 0E              1209 	ldhl	sp,#14
+   0480 79                 1210 	ld	a,c
+   0481 96                 1211 	sub	a, (hl)
+   0482 23                 1212 	inc	hl
+   0483 78                 1213 	ld	a,b
+   0484 9E                 1214 	sbc	a, (hl)
+   0485 78                 1215 	ld	a,b
+   0486 57                 1216 	ld	d, a
+   0487 5E                 1217 	ld	e, (hl)
+   0488 CB 7B              1218 	bit	7, e
+   048A 28 07              1219 	jr	Z,00161$
+   048C CB 7A              1220 	bit	7, d
+   048E 20 08              1221 	jr	NZ,00162$
+   0490 BF                 1222 	cp	a, a
+   0491 18 05              1223 	jr	00162$
+   0493                    1224 00161$:
+   0493 CB 7A              1225 	bit	7, d
+   0495 28 01              1226 	jr	Z,00162$
+   0497 37                 1227 	scf
+   0498                    1228 00162$:
+   0498 DAr44r05           1229 	jp	C,00113$
+                           1230 ;main.c:277: if(bullets[i].yPos > enemies[j].yPos+8) {
+   049B F8 07              1231 	ldhl	sp,#7
+   049D 2B                 1232 	dec	hl
+   049E 5E                 1233 	ld	e,(hl)
+   049F 23                 1234 	inc	hl
+   04A0 56                 1235 	ld	d,(hl)
+   04A1 21 01 00           1236 	ld	hl,#0x0001
+   04A4 19                 1237 	add	hl,de
+   04A5 7D                 1238 	ld	a,l
+   04A6 54                 1239 	ld	d,h
+   04A7 F8 0C              1240 	ldhl	sp,#12
+   04A9 22                 1241 	ld	(hl+),a
+   04AA 72                 1242 	ld	(hl),d
+   04AB 2B                 1243 	dec	hl
+   04AC 5E                 1244 	ld	e,(hl)
+   04AD 23                 1245 	inc	hl
+   04AE 56                 1246 	ld	d,(hl)
+   04AF 1A                 1247 	ld	a,(de)
+   04B0 4F                 1248 	ld	c,a
+   04B1 F8 03              1249 	ldhl	sp,#3
+   04B3 2B                 1250 	dec	hl
+   04B4 5E                 1251 	ld	e,(hl)
+   04B5 23                 1252 	inc	hl
+   04B6 56                 1253 	ld	d,(hl)
+   04B7 21 01 00           1254 	ld	hl,#0x0001
+   04BA 19                 1255 	add	hl,de
+   04BB 7D                 1256 	ld	a,l
+   04BC 54                 1257 	ld	d,h
+   04BD F8 0E              1258 	ldhl	sp,#14
+   04BF 22                 1259 	ld	(hl+),a
+   04C0 72                 1260 	ld	(hl),d
+   04C1 2B                 1261 	dec	hl
+   04C2 5E                 1262 	ld	e,(hl)
+   04C3 23                 1263 	inc	hl
+   04C4 56                 1264 	ld	d,(hl)
+   04C5 1A                 1265 	ld	a,(de)
+   04C6 F8 0A              1266 	ldhl	sp,#10
+   04C8 22                 1267 	ld	(hl+),a
+   04C9 36 00              1268 	ld	(hl),#0x00
+   04CB 2B                 1269 	dec	hl
+   04CC 5E                 1270 	ld	e,(hl)
+   04CD 23                 1271 	inc	hl
+   04CE 56                 1272 	ld	d,(hl)
+   04CF 21 08 00           1273 	ld	hl,#0x0008
+   04D2 19                 1274 	add	hl,de
+   04D3 7D                 1275 	ld	a,l
+   04D4 54                 1276 	ld	d,h
+   04D5 F8 08              1277 	ldhl	sp,#8
+   04D7 22                 1278 	ld	(hl+),a
+   04D8 72                 1279 	ld	(hl),d
+   04D9 06 00              1280 	ld	b,#0x00
+   04DB 2B                 1281 	dec	hl
+   04DC 7E                 1282 	ld	a, (hl)
+   04DD 91                 1283 	sub	a, c
+   04DE 23                 1284 	inc	hl
+   04DF 7E                 1285 	ld	a, (hl)
+   04E0 98                 1286 	sbc	a, b
+   04E1 56                 1287 	ld	d, (hl)
+   04E2 78                 1288 	ld	a,b
+   04E3 5F                 1289 	ld	e, a
+   04E4 CB 7B              1290 	bit	7, e
+   04E6 28 07              1291 	jr	Z,00163$
+   04E8 CB 7A              1292 	bit	7, d
+   04EA 20 08              1293 	jr	NZ,00164$
+   04EC BF                 1294 	cp	a, a
+   04ED 18 05              1295 	jr	00164$
+   04EF                    1296 00163$:
+   04EF CB 7A              1297 	bit	7, d
+   04F1 28 01              1298 	jr	Z,00164$
+   04F3 37                 1299 	scf
+   04F4                    1300 00164$:
+   04F4 DAr44r05           1301 	jp	C,00113$
+                           1302 ;main.c:280: if(bullets[i].yPos + 8 < enemies[j].yPos) {
+   04F7 21 08 00           1303 	ld	hl,#0x0008
+   04FA 09                 1304 	add	hl,bc
+   04FB 4D                 1305 	ld	c,l
+   04FC 44                 1306 	ld	b,h
+   04FD F8 0A              1307 	ldhl	sp,#10
+   04FF 79                 1308 	ld	a,c
+   0500 96                 1309 	sub	a, (hl)
+   0501 23                 1310 	inc	hl
+   0502 78                 1311 	ld	a,b
+   0503 9E                 1312 	sbc	a, (hl)
+   0504 78                 1313 	ld	a,b
+   0505 57                 1314 	ld	d, a
+   0506 5E                 1315 	ld	e, (hl)
+   0507 CB 7B              1316 	bit	7, e
+   0509 28 07              1317 	jr	Z,00165$
+   050B CB 7A              1318 	bit	7, d
+   050D 20 08              1319 	jr	NZ,00166$
+   050F BF                 1320 	cp	a, a
+   0510 18 05              1321 	jr	00166$
+   0512                    1322 00165$:
+   0512 CB 7A              1323 	bit	7, d
+   0514 28 01              1324 	jr	Z,00166$
+   0516 37                 1325 	scf
+   0517                    1326 00166$:
+   0517 DAr44r05           1327 	jp	C,00113$
+                           1328 ;main.c:285: bullets[i].active = 0;
+   051A F8 04              1329 	ldhl	sp,#4
+   051C 2A                 1330 	ld	a,(hl+)
+   051D 66                 1331 	ld	h,(hl)
+   051E 6F                 1332 	ld	l,a
+   051F 36 00              1333 	ld	(hl),#0x00
+                           1334 ;main.c:286: bullets[i].xPos = 0;
+   0521 F8 06              1335 	ldhl	sp,#6
+   0523 2A                 1336 	ld	a,(hl+)
+   0524 66                 1337 	ld	h,(hl)
+   0525 6F                 1338 	ld	l,a
+   0526 36 00              1339 	ld	(hl),#0x00
+                           1340 ;main.c:287: bullets[i].yPos = 0;
+   0528 F8 0C              1341 	ldhl	sp,#12
+   052A 2A                 1342 	ld	a,(hl+)
+   052B 66                 1343 	ld	h,(hl)
+   052C 6F                 1344 	ld	l,a
+   052D 36 00              1345 	ld	(hl),#0x00
+                           1346 ;main.c:289: enemies[j].active = 0;
+   052F F8 10              1347 	ldhl	sp,#16
+   0531 2A                 1348 	ld	a,(hl+)
+   0532 66                 1349 	ld	h,(hl)
+   0533 6F                 1350 	ld	l,a
+   0534 36 00              1351 	ld	(hl),#0x00
+                           1352 ;main.c:290: enemies[j].xPos = 0;
+   0536 F8 02              1353 	ldhl	sp,#2
+   0538 2A                 1354 	ld	a,(hl+)
+   0539 66                 1355 	ld	h,(hl)
+   053A 6F                 1356 	ld	l,a
+   053B 36 00              1357 	ld	(hl),#0x00
+                           1358 ;main.c:291: enemies[j].yPos = 0;
+   053D F8 0E              1359 	ldhl	sp,#14
+   053F 2A                 1360 	ld	a,(hl+)
+   0540 66                 1361 	ld	h,(hl)
+   0541 6F                 1362 	ld	l,a
+   0542 36 00              1363 	ld	(hl),#0x00
+   0544                    1364 00113$:
+                           1365 ;main.c:266: for(j = 0; j < MAX_ENEMIES; j++) {
+   0544 F8 01              1366 	ldhl	sp,#1
+   0546 34                 1367 	inc	(hl)
+   0547 7E                 1368 	ld	a,(hl)
+   0548 D6 07              1369 	sub	a, #0x07
+   054A DAr0Ar04           1370 	jp	C,00117$
+   054D                    1371 00115$:
+                           1372 ;main.c:258: for(i = 0; i < MAX_BULLETS; i++)
+   054D F8 00              1373 	ldhl	sp,#0
+   054F 34                 1374 	inc	(hl)
+   0550 7E                 1375 	ld	a,(hl)
+   0551 D6 0A              1376 	sub	a, #0x0A
+   0553 DArD8r03           1377 	jp	C,00118$
+   0556 E8 12              1378 	add	sp, #18
+   0558 C9                 1379 	ret
+                           1380 	.area _CODE
+                           1381 	.area _CABS (ABS)
