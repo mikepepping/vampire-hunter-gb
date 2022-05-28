@@ -25,8 +25,7 @@
 
 /*Predeclare our functions*/
 void init();
-void InitBullets
-();
+void InitBullets();
 void InitEnemies();
 
 void CheckInput();
@@ -60,7 +59,7 @@ UINT8 bulletCooldown;
 //enemy pool
 struct GameObject enemies[MAX_ENEMIES];
 
-//enemy cooldown is used to controll the speed of the enemies movement by skipping frames of UpdateSwitches
+//enemy cooldown is used to control the speed of the enemies movement by skipping frames of UpdateSwitches
 UINT8 enemyUpdateCooldown;
 UINT8 enemySpawnTimer;
 
@@ -98,8 +97,7 @@ void init() {
   playerPos[X] = PLAYER_SPAWN_X;
   playerPos[Y] = PLAYER_SPAWN_Y;
 
-  InitBullets
-  ();
+  InitBullets();
   InitEnemies();
 }
 
