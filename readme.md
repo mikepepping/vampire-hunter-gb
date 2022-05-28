@@ -8,9 +8,9 @@ Simply load up schmup.gb in your favourite GB emulator.
 
 ## Compilation
 
-You will need to have GBDK installed, this project has only ever been compiled on Ubutnu 16 LTS with gcc.
+Update - this project no longer is compatibale with the original GBDK.
+You will need to have GBDK-2020 installed (v 4.0.6).
 
-[andreasjhkarlsson](https://github.com/andreasjhkarlsson) keeps a nice copy of it [here](https://github.com/andreasjhkarlsson/gbdk-n). Thanks Andreas!
+Run `make` to build the gb file.
+You will need to check the makefile and the compile.bat to ensure the paths to gbdk are correct for your environment.
 
-The original GBDK sourceforge project site still stands also with information on how to install GBDK.
-[GBDK sourceforge](http://gbdk.sourceforge.net/)

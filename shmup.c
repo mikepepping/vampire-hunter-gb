@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <stdbool.h>
 #include "sprites.c"
 #include "mapTiles.c"
 
@@ -24,16 +25,17 @@
 
 /*Predeclare our functions*/
 void init();
-void initBullets();
-void initEnemies();
+void InitBullets
+();
+void InitEnemies();
 
-void checkInput();
-void fireBullet();
+void CheckInput();
+void FireBullet();
 
-void updateBullets();
-void updateEnemies();
-void checkCollisions();
-void updateSwitches();
+void UpdateBullets();
+void UpdateEnemies();
+void CheckCollisions();
+void UpdateSwitches();
 
 //this will hold out count of sprites
 UINT8 spriteCount;
@@ -58,7 +60,7 @@ UINT8 bulletCooldown;
 //enemy pool
 struct GameObject enemies[MAX_ENEMIES];
 
-//enemy cooldown is used to controll the speed of the enemies movement by skipping frames of updateSwitches
+//enemy cooldown is used to controll the speed of the enemies movement by skipping frames of UpdateSwitches
 UINT8 enemyUpdateCooldown;
 UINT8 enemySpawnTimer;
 
@@ -69,11 +71,11 @@ void main() {
 
 	while(1) {
 
-		checkInput();				// Check for user input (and act on it)
-    updateBullets();
-    updateEnemies();
-    checkCollisions();
-		updateSwitches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
+		CheckInput();				// Check for user input (and act on it)
+    UpdateBullets();
+    UpdateEnemies();
+    CheckCollisions();
+		UpdateSwitches();			// Make sure the SHOW_SPRITES and SHOW_BKG switches are on each loop
 		wait_vbl_done();			// Wait until VBLANK to avoid corrupting memory
 	}
 
@@ -96,11 +98,13 @@ void init() {
   playerPos[X] = PLAYER_SPAWN_X;
   playerPos[Y] = PLAYER_SPAWN_Y;
 
-  initBullets();
-  initEnemies();
+  InitBullets
+  ();
+  InitEnemies();
 }
 
-void initBullets()
+void InitBullets
+()
 {
   UINT8 i;
   for(i = 0; i < MAX_BULLETS; i++)
@@ -115,7 +119,7 @@ void initBullets()
   }
 }
 
-void initEnemies()
+void InitEnemies()
 {
   UINT8 i;
   for(i = 0; i < MAX_ENEMIES; i++)
@@ -130,14 +134,13 @@ void initEnemies()
   }
 }
 
-void updateSwitches() {
-
+void UpdateSwitches() {
 	HIDE_WIN;
 	SHOW_SPRITES;
 	SHOW_BKG;
 }
 
-void checkInput() {
+void CheckInput() {
 
   // LEFT
 	if (joypad() & J_LEFT) {
@@ -157,7 +160,7 @@ void checkInput() {
 	if (joypad() & J_B) {
     if(bulletCooldown > BULLET_COOLDOWN)
     {
-        fireBullet();
+        FireBullet();
         bulletCooldown = 0;
     }
   }
@@ -165,7 +168,7 @@ void checkInput() {
   move_sprite(PLAYER_SPRITE, playerPos[X], playerPos[Y]);
 }
 
-void fireBullet()
+void FireBullet()
 {
   UINT8 i;
   for(i = 0; i < MAX_BULLETS; i++) {
@@ -179,7 +182,7 @@ void fireBullet()
   }
 }
 
-void updateBullets()
+void UpdateBullets()
 {
   UINT8 i;
   for(i = 0; i < MAX_BULLETS; i++) {
@@ -202,7 +205,7 @@ void updateBullets()
   bulletCooldown++;
 }
 
-void updateEnemies()
+void UpdateEnemies()
 {
   UINT8 i;
   //only update if cooldown is over
@@ -254,25 +257,25 @@ void updateEnemies()
 }
 
 
-void checkAABBCollision(GameObject a, GameObject b)
-{
-  if(a.xPos > (b.xPos + GAMEOBJECT_WIDTH)) {
+bool CheckAABBCollision(struct GameObject * pObjectA, struct GameObject * pObjectB) {
+
+  if(pObjectA->xPos > (pObjectB->xPos + GAMEOBJECT_WIDTH)) {
     return false;
   }
-  if(a.xPos + GAMEOBJECT_WIDTH < b.xPos) {
+  if(pObjectA->xPos + GAMEOBJECT_WIDTH < pObjectB->xPos) {
     return false;
   }
-  if(a.yPos > b.yPos + GAMEOBJECT_HEIGHT) {
+  if(pObjectA->yPos > pObjectB->yPos + GAMEOBJECT_HEIGHT) {
     return false;
   }
-  if(a.yPos + GAMEOBJECT_HEIGHT < b.yPos) {
+  if(pObjectA->yPos + GAMEOBJECT_HEIGHT < pObjectB->yPos) {
     return false;
   }
 
   return true;
 }
 
-void checkCollisions()
+void CheckCollisions()
 {
   UINT8 i;
   UINT8 j;
@@ -290,7 +293,7 @@ void checkCollisions()
         continue;
       }
 
-      if(!checkAABBCollision(bullets[i], enemies[j]) {
+      if(!CheckAABBCollision(&bullets[i], &enemies[j])) {
         continue; //no collision
       }
 

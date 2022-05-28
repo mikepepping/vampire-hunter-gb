@@ -1,14 +1,17 @@
-BIN=../../gbdk-n/bin
-OBJ=./obj
+CC	= ../gbdk/bin/lcc -Wa-l -Wl-m -Wl-j
 
+BINS	= shmup.gb
 
+all:	$(BINS)
 
-build:
-	mkdir -p $(OBJ)
-	$(BIN)/gbdk-n-compile.sh main.c -o $(OBJ)/main.rel
-	$(BIN)/gbdk-n-link.sh $(OBJ)/main.rel -o $(OBJ)/main.ihx
-	$(BIN)/gbdk-n-make-rom.sh $(OBJ)/main.ihx shmup.gb
+compile.bat: Makefile
+	@echo "REM Automatically generated from Makefile" > compile.bat
+	@make -sn | sed y/\\//\\\\/ | grep -v make >> compile.bat
+
+# Compile and link single file in one pass
+%.gb:	%.c
+	$(CC) -o $@ $<
 
 clean:
-	rm -rf $(OBJ)
-	rm -f shmup.gb
+	rm -f *.o *.lst *.map *.gb *~ *.rel *.cdb *.ihx *.lnk *.sym *.asm *.noi
+
