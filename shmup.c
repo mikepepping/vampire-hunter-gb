@@ -1,11 +1,12 @@
 #include <gb/gb.h>
+#include <stdint.h>
 #include <stdbool.h>
-#include "sprites.c"
+#include "media/sprites.c"
 #include "mapTiles.c"
 
 /*create out game constants here as defines*/
 #define PLAYER_SPRITE 0
-#define PLAYER_TILE 1
+#define PLAYER_TILE 3
 #define X 0
 #define Y 1
 #define PLAYER_SPAWN_X 80
@@ -15,7 +16,7 @@
 #define MAX_BULLETS 10
 #define BULLET_COOLDOWN 30
 
-#define ENEMY_TILE 3
+#define ENEMY_TILE 1
 #define MAX_ENEMIES 7
 #define ENEMY_UPDATE_COOLDOWN 1
 #define ENEMY_SPAWN_TIME 60
@@ -24,7 +25,7 @@
 #define GAMEOBJECT_HEIGHT 8
 
 /*Predeclare our functions*/
-void init();
+void Init();
 void InitBullets();
 void InitEnemies();
 
@@ -37,36 +38,36 @@ void CheckCollisions();
 void UpdateSwitches();
 
 //this will hold out count of sprites
-UINT8 spriteCount;
+uint8_t spriteCount;
 
 // The player array will hold the player's position as X ([0]) and Y ([1])
-UINT8 playerPos[2];
+uint8_t playerPos[2];
 
 //these will hold the data for all objects other than the player
 struct GameObject {
-  UINT8 xPos;
-  UINT8 yPos;
-  UINT8 sprite;
-  UINT8 active;
+  uint8_t xPos;
+  uint8_t yPos;
+  uint8_t sprite;
+  uint8_t active;
 };
 
 //bullets
 struct GameObject bullets[MAX_BULLETS];
 
 //fire button cooldown
-UINT8 bulletCooldown;
+uint8_t bulletCooldown;
 
 //enemy pool
 struct GameObject enemies[MAX_ENEMIES];
 
 //enemy cooldown is used to control the speed of the enemies movement by skipping frames of UpdateSwitches
-UINT8 enemyUpdateCooldown;
-UINT8 enemySpawnTimer;
+uint8_t enemyUpdateCooldown;
+uint8_t enemySpawnTimer;
 
 
 void main() {
 
-	init();
+	Init();
 
 	while(1) {
 
@@ -80,7 +81,7 @@ void main() {
 
 }
 
-void init() {
+void Init() {
 
 	DISPLAY_ON;						// Turn on the display
 
@@ -88,7 +89,7 @@ void init() {
 
 	// Load the the 'sprites' tiles into sprite memory
   spriteCount = 0;
-	set_sprite_data(0, 4, sprites);
+	set_sprite_data(0, 4, Sprites);
 
 	// Set the first movable sprite (0) to be the first tile in the sprite memory (0)
 	set_sprite_tile(PLAYER_SPRITE, PLAYER_TILE);
@@ -104,7 +105,7 @@ void init() {
 void InitBullets
 ()
 {
-  UINT8 i;
+  uint8_t i;
   for(i = 0; i < MAX_BULLETS; i++)
   {
     bullets[i].xPos = 0;
@@ -119,7 +120,7 @@ void InitBullets
 
 void InitEnemies()
 {
-  UINT8 i;
+  uint8_t i;
   for(i = 0; i < MAX_ENEMIES; i++)
   {
     enemies[i].xPos = (i+1)*16;
@@ -168,7 +169,7 @@ void CheckInput() {
 
 void FireBullet()
 {
-  UINT8 i;
+  uint8_t i;
   for(i = 0; i < MAX_BULLETS; i++) {
     if(bullets[i].active == 0)
     {
@@ -182,7 +183,7 @@ void FireBullet()
 
 void UpdateBullets()
 {
-  UINT8 i;
+  uint8_t i;
   for(i = 0; i < MAX_BULLETS; i++) {
     if(bullets[i].active == 0) {
         bullets[i].xPos = 0;
@@ -205,7 +206,7 @@ void UpdateBullets()
 
 void UpdateEnemies()
 {
-  UINT8 i;
+  uint8_t i;
   //only update if cooldown is over
   if(enemyUpdateCooldown > ENEMY_UPDATE_COOLDOWN) {
 
@@ -275,8 +276,8 @@ bool CheckAABBCollision(struct GameObject * pObjectA, struct GameObject * pObjec
 
 void CheckCollisions()
 {
-  UINT8 i;
-  UINT8 j;
+  uint8_t i;
+  uint8_t j;
 
   for(i = 0; i < MAX_BULLETS; i++)
   {
