@@ -9,6 +9,7 @@ compile.bat: Makefile
 	@make -sn | sed y/\\//\\\\/ | grep -v make >> compile.bat
 
 # Compile and link single file in one pass
+
 %.gb:	main.c
 	$(CC) -o $@ $<
 
