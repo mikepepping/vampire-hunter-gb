@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "media/sprites.c"
 #include "mapTiles.c"
+#include "gameobject.h"
 
 /*create out game constants here as defines*/
 #define PLAYER_SPRITE 0
@@ -26,6 +27,7 @@
 
 /*Predeclare our functions*/
 void Init();
+void InitPlayer();
 void InitBullets();
 void InitEnemies();
 
@@ -40,16 +42,8 @@ void UpdateSwitches();
 //this will hold out count of sprites
 uint8_t spriteCount;
 
-// The player array will hold the player's position as X ([0]) and Y ([1])
-uint8_t playerPos[2];
-
-//these will hold the data for all objects other than the player
-struct GameObject {
-  uint8_t xPos;
-  uint8_t yPos;
-  uint8_t sprite;
-  uint8_t active;
-};
+// The player game object
+struct GameObject player;
 
 //bullets
 struct GameObject bullets[MAX_BULLETS];
@@ -85,25 +79,30 @@ void Init() {
 
 	DISPLAY_ON;						// Turn on the display
 
-  set_bkg_data(0,1, mapTiles);
+  set_bkg_data(0, 1, mapTiles);
 
 	// Load the the 'sprites' tiles into sprite memory
   spriteCount = 0;
 	set_sprite_data(0, 4, Sprites);
 
-	// Set the first movable sprite (0) to be the first tile in the sprite memory (0)
-	set_sprite_tile(PLAYER_SPRITE, PLAYER_TILE);
-  spriteCount++;
-
-  playerPos[X] = PLAYER_SPAWN_X;
-  playerPos[Y] = PLAYER_SPAWN_Y;
-
+  InitPlayer();
   InitBullets();
   InitEnemies();
 }
 
-void InitBullets
-()
+void InitPlayer() {
+
+	// Set the first movable sprite (0) to be the first tile in the sprite memory (0)
+  player.xPos = PLAYER_SPAWN_X;
+  player.yPos = PLAYER_SPAWN_Y;
+  player.sprite = spriteCount;
+  player.active = true;
+	set_sprite_tile(spriteCount, PLAYER_TILE);
+  move_sprite(spriteCount, player.xPos, player.yPos);
+  spriteCount++;
+}
+
+void InitBullets()
 {
   uint8_t i;
   for(i = 0; i < MAX_BULLETS; i++)
@@ -111,7 +110,7 @@ void InitBullets
     bullets[i].xPos = 0;
     bullets[i].yPos = 0;
     bullets[i].sprite = spriteCount;
-    bullets[i].active = 0;
+    bullets[i].active = false;
     set_sprite_tile(spriteCount, BULLET_TILE);
     move_sprite(spriteCount, 16*i, 20);
     spriteCount++;
@@ -144,14 +143,14 @@ void CheckInput() {
   // LEFT
 	if (joypad() & J_LEFT) {
 
-		playerPos[X]--;
+	  player.xPos--;
 
 	}
 
 	// RIGHT
 	if (joypad() & J_RIGHT) {
 
-		playerPos[X]++;
+		player.xPos++;
 
   }
 
@@ -164,7 +163,7 @@ void CheckInput() {
     }
   }
 
-  move_sprite(PLAYER_SPRITE, playerPos[X], playerPos[Y]);
+  move_sprite(PLAYER_SPRITE, player.xPos, player.yPos);
 }
 
 void FireBullet()
@@ -173,8 +172,8 @@ void FireBullet()
   for(i = 0; i < MAX_BULLETS; i++) {
     if(bullets[i].active == 0)
     {
-      bullets[i].xPos = playerPos[X];
-      bullets[i].yPos = playerPos[Y];
+      bullets[i].xPos = player.xPos;
+      bullets[i].yPos = player.yPos;
       bullets[i].active = 1;
       return;
     }
@@ -214,7 +213,7 @@ void UpdateEnemies()
 
     for(i = 0; i < MAX_ENEMIES; i++)
     {
-      if(enemies[i].active == 0) {
+      if(enemies[i].active == false) {
           enemies[i].xPos = 0;
           enemies[i].yPos = 0;
       }
@@ -224,7 +223,7 @@ void UpdateEnemies()
       }
 
       if(enemies[i].yPos > 160) {
-        enemies[i].active = 0;
+        enemies[i].active = false;
         enemies[i].xPos = 0;
         enemies[i].yPos = 0;
       }
@@ -240,11 +239,11 @@ void UpdateEnemies()
   {
     enemySpawnTimer = 0;
     for(i = 0; i < MAX_ENEMIES; i++) {
-        if(enemies[i].active == 0)
+        if(enemies[i].active == false)
         {
-          enemies[i].active = 1;
+          enemies[i].active = true;
           enemies[i].yPos = 8;
-          enemies[i].xPos = rand() %128+16;
+          enemies[i].xPos = rand() %112+16;
           break;
         }
     }

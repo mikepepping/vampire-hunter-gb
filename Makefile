@@ -1,6 +1,6 @@
 CC	= ../gbdk/bin/lcc -Wa-l -Wl-m -Wl-j
 
-BINS	= shmup.gb
+BINS	= vampire-hunter.gb
 
 all:	$(BINS)
 
@@ -9,7 +9,7 @@ compile.bat: Makefile
 	@make -sn | sed y/\\//\\\\/ | grep -v make >> compile.bat
 
 # Compile and link single file in one pass
-%.gb:	%.c
+%.gb:	main.c
 	$(CC) -o $@ $<
 
 clean:
